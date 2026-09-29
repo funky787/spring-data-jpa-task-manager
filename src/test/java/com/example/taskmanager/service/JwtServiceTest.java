@@ -20,14 +20,14 @@ class JwtServiceTest {
 
         jwtService = new JwtService();
 
-        // BASE64-ключ для подписи JWT
+
         ReflectionTestUtils.setField(
                 jwtService,
                 "secret",
                 "MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTI="
         );
 
-        // Токен действует 24 часа
+
         ReflectionTestUtils.setField(
                 jwtService,
                 "expiration",
@@ -42,7 +42,7 @@ class JwtServiceTest {
     }
 
 
-    // Проверяем, что токен вообще создаётся
+
     @Test
     void generateToken_shouldCreateToken() {
 
@@ -53,7 +53,7 @@ class JwtServiceTest {
     }
 
 
-    // Проверяем, что из токена достаётся правильный email
+
     @Test
     void extractUsername_shouldReturnCorrectEmail() {
 
@@ -67,7 +67,7 @@ class JwtServiceTest {
     }
 
 
-    // Проверяем валидный токен
+
     @Test
     void isTokenValid_shouldReturnTrueForValidToken() {
 
@@ -80,7 +80,7 @@ class JwtServiceTest {
     }
 
 
-    // Проверяем, что токен другого пользователя не подходит
+
     @Test
     void isTokenValid_shouldReturnFalseForDifferentUser() {
 

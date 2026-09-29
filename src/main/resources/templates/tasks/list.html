@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Задачи</title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+<div th:replace="~{layout :: header}"></div>
+
+<main class="container">
+
+    <h1>Список задач</h1>
+
+    <p>
+        <a class="button"
+           th:href="@{/web/tasks/new}">
+            + Создать задачу
+        </a>
+    </p>
+
+    <div class="card"
+         th:if="${#lists.isEmpty(tasks)}">
+
+        Задач пока нет
+
+    </div>
+
+    <table th:if="${!#lists.isEmpty(tasks)}">
+
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Название</th>
+            <th>Приоритет</th>
+            <th>Статус</th>
+            <th>Владелец</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        <tr th:each="task : ${tasks}">
+
+            <td th:text="${task.id}"></td>
+
+            <td th:text="${task.title}"></td>
+
+            <td th:text="${task.priority}"></td>
+
+            <td th:text="${task.status}"></td>
+
+            <td th:text="${task.owner != null
+                           ? task.owner.email
+                           : '-'}">
+            </td>
+
+            <td>
+
+                <div class="actions">
+
+                    <a class="button"
+                       th:href="@{/web/tasks/{id}(id=${task.id})}">
+                        Подробнее
+                    </a>
+
+                    <a class="button"
+                       sec:authorize="hasRole('ADMIN')"
+                       th:href="@{/web/tasks/{id}/edit(id=${task.id})}">
+                        Изменить
+                    </a>
+
+                    <form sec:authorize="hasRole('ADMIN')"
+                          th:action="@{/web/tasks/{id}/delete(id=${task.id})}"
+                          method="post">
+
+                        <button class="button button-danger"
+                                type="submit">
+                            Удалить
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </td>
+
+        </tr>
+
+        </tbody>
+
+    </table>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+
+    <title th:text="${taskId == null
+                     ? 'Создание задачи'
+                     : 'Редактирование задачи'}">
+        Задача
+    </title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+<div th:replace="~{layout :: header}"></div>
+
+<main class="container">
+
+    <h1 th:text="${taskId == null
+                  ? 'Создать задачу'
+                  : 'Редактировать задачу'}">
+    </h1>
+
+    <div class="card">
+
+        <form th:action="${taskId == null}
+                        ? @{/web/tasks}
+                        : @{/web/tasks/{id}(id=${taskId})}"
+              th:object="${taskRequest}"
+              method="post">
+
+            <div class="form-group">
+
+                <label>Название</label>
+
+                <input type="text"
+                       th:field="*{title}">
+
+                <div class="error"
+                     th:if="${#fields.hasErrors('title')}"
+                     th:errors="*{title}">
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Описание</label>
+
+                <textarea th:field="*{description}"></textarea>
+
+                <div class="error"
+                     th:if="${#fields.hasErrors('description')}"
+                     th:errors="*{description}">
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Приоритет</label>
+
+                <select th:field="*{priority}">
+
+                    <option th:each="priority : ${priorities}"
+                            th:value="${priority}"
+                            th:text="${priority}">
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Статус</label>
+
+                <select th:field="*{status}">
+
+                    <option th:each="status : ${statuses}"
+                            th:value="${status}"
+                            th:text="${status}">
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="actions">
+
+                <button class="button"
+                        type="submit"
+                        th:text="${taskId == null
+                                 ? 'Создать'
+                                 : 'Сохранить'}">
+                </button>
+
+                <a class="button"
+                   th:href="@{/web/tasks}">
+                    Отмена
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</main>
+
+</body>
+</html>

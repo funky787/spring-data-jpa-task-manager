@@ -1,0 +1,52 @@
+!DOCTYPE html>
+<html lang="ru"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<body>
+
+<header th:fragment="header" class="header">
+
+    <div class="container header-content">
+
+        <a class="logo"
+           th:href="@{/web/tasks}">
+            Task Manager
+        </a>
+
+        <div sec:authorize="isAuthenticated()"
+             class="user-info">
+
+            <span>
+                Пользователь:
+                <b sec:authentication="name"></b>
+            </span>
+
+            <span sec:authorize="hasRole('ADMIN')"
+                  class="role">
+                ADMIN
+            </span>
+
+            <span sec:authorize="hasRole('USER')"
+                  class="role">
+                USER
+            </span>
+
+            <form th:action="@{/logout}"
+                  method="post">
+
+                <button type="submit"
+                        class="logout-button">
+                    Выйти
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</header>
+
+</body>
+</html>

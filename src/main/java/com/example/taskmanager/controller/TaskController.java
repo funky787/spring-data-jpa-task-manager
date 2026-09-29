@@ -27,9 +27,7 @@ public class TaskController {
     }
 
 
-    // =========================
-    // GET /tasks
-    // =========================
+
 
     @GetMapping
     public Object getAll(
@@ -39,12 +37,12 @@ public class TaskController {
             @RequestParam(required = false) Integer size,
             @RequestParam(required = false) String sort) {
 
-        // Старые фильтры REST-задания продолжают работать
+
         if (status != null || priority != null) {
             return taskService.getAll(status, priority);
         }
 
-        // Пагинация
+
         if (page != null || size != null || sort != null) {
 
             int pageValue = page == null ? 0 : page;
@@ -62,9 +60,7 @@ public class TaskController {
     }
 
 
-    // =========================
-    // GET /tasks/search
-    // =========================
+
 
     @GetMapping("/search")
     public List<Task> search(
@@ -74,9 +70,7 @@ public class TaskController {
     }
 
 
-    // =========================
-    // GET /tasks/stats
-    // =========================
+
 
     @GetMapping("/stats")
     public Map<String, Long> getStats() {
@@ -85,9 +79,7 @@ public class TaskController {
     }
 
 
-    // =========================
-    // GET /tasks/{id}
-    // =========================
+
 
     @GetMapping("/{id}")
     public ResponseEntity<Task> getById(
@@ -101,10 +93,7 @@ public class TaskController {
     }
 
 
-    // =========================
-    // POST /tasks
-    // USER и ADMIN
-    // =========================
+
 
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @PostMapping
@@ -124,9 +113,7 @@ public class TaskController {
     }
 
 
-    // =========================
-    // PUT /tasks/{id}
-    // =========================
+
 
     @PutMapping("/{id}")
     public ResponseEntity<Task> update(
@@ -141,9 +128,7 @@ public class TaskController {
     }
 
 
-    // =========================
-    // PATCH /tasks/{id}/status
-    // =========================
+
 
     @PatchMapping("/{id}/status")
     public ResponseEntity<Task> updateStatus(
@@ -181,10 +166,7 @@ public class TaskController {
     }
 
 
-    // =========================
-    // DELETE /tasks/{id}
-    // Только ADMIN
-    // =========================
+
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
@@ -199,10 +181,7 @@ public class TaskController {
     }
 
 
-    // =========================
-    // GET /tasks/my
-    // Только свои задачи
-    // =========================
+
 
     @GetMapping("/my")
     public List<Task> getMyTasks(

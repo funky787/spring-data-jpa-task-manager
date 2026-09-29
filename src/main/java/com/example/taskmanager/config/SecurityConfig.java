@@ -11,10 +11,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -43,10 +43,14 @@ public class SecurityConfig {
         this.customAccessDeniedHandler = customAccessDeniedHandler;
     }
 
+
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
@@ -60,6 +64,7 @@ public class SecurityConfig {
         return provider;
     }
 
+
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration configuration
@@ -68,56 +73,112 @@ public class SecurityConfig {
         return configuration.getAuthenticationManager();
     }
 
+
     @Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http
     ) throws Exception {
 
         http
+
+
                 .csrf(csrf -> csrf.disable())
 
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(
-                                SessionCreationPolicy.STATELESS
-                        )
-                )
+
 
                 .authorizeHttpRequests(auth -> auth
 
-                        // Регистрация и вход доступны без JWT
-                        .requestMatchers("/auth/**", "/error")
+
+                        .requestMatchers("/auth/**")
                         .permitAll()
 
-                        // H2 Console
+
+                        .requestMatchers("/login")
+                        .permitAll()
+
+
+                        .requestMatchers("/css/**")
+                        .permitAll()
+
+
                         .requestMatchers("/h2-console/**")
                         .permitAll()
 
-                        // Всё остальное требует авторизации
+
+                        .requestMatchers("/error")
+                        .permitAll()
+
+
                         .anyRequest()
                         .authenticated()
                 )
 
-                // JSON для 401 и 403
+
+
+                .formLogin(form -> form
+
+
+                        .loginPage("/login")
+
+
+                        .loginProcessingUrl("/login")
+
+
+                        .usernameParameter("username")
+
+
+                        .passwordParameter("password")
+
+
+                        .defaultSuccessUrl("/web/tasks", true)
+
+
+                        .failureUrl("/login?error")
+
+                        .permitAll()
+                )
+
+
+
+                .logout(logout -> logout
+
+                        .logoutUrl("/logout")
+
+                        .logoutSuccessUrl("/login?logout")
+
+                        .permitAll()
+                )
+
+
+
                 .exceptionHandling(exception -> exception
+
                         .authenticationEntryPoint(customAuthEntryPoint)
+
                         .accessDeniedHandler(customAccessDeniedHandler)
                 )
 
-                // Нужно для H2 Console
+
+
                 .headers(headers ->
                         headers.frameOptions(frame ->
                                 frame.sameOrigin()
                         )
                 )
 
+
+
                 .authenticationProvider(
                         authenticationProvider()
                 )
+
+
 
                 .addFilterBefore(
                         jwtAuthFilter,
                         UsernamePasswordAuthenticationFilter.class
                 );
+
 
         return http.build();
     }

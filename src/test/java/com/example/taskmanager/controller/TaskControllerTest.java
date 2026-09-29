@@ -47,7 +47,7 @@ class TaskControllerTest {
     private JwtService jwtService;
 
 
-    // Без авторизации GET /tasks должен вернуть 401
+
     @Test
     void getTasks_withoutAuthentication_shouldReturnUnauthorized()
             throws Exception {
@@ -59,7 +59,7 @@ class TaskControllerTest {
     }
 
 
-    // Обычный USER может получать задачи
+
     @Test
     @WithMockUser(roles = "USER")
     void getTasks_asUser_shouldReturnOk()
@@ -70,7 +70,7 @@ class TaskControllerTest {
     }
 
 
-    // USER не может удалять задачи
+
     @Test
     @WithMockUser(roles = "USER")
     void deleteTask_asUser_shouldReturnForbidden()
@@ -83,7 +83,7 @@ class TaskControllerTest {
     }
 
 
-    // ADMIN может удалять задачи
+
     @Test
     @WithMockUser(roles = "ADMIN")
     void deleteTask_asAdmin_shouldReturnNoContent()

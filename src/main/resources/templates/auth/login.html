@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Вход</title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/style.css}">
+
+</head>
+
+<body>
+
+<div class="login-box">
+
+    <h1>Task Manager</h1>
+
+    <h2>Вход</h2>
+
+    <div class="message"
+         th:if="${param.error}">
+
+        Неверный email или пароль
+
+    </div>
+
+    <div class="message"
+         th:if="${param.logout}">
+
+        Вы успешно вышли из системы
+
+    </div>
+
+    <form th:action="@{/login}"
+          method="post">
+
+        <div class="form-group">
+
+            <label>Email</label>
+
+            <input type="text"
+                   name="username"
+                   required>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Пароль</label>
+
+            <input type="password"
+                   name="password"
+                   required>
+
+        </div>
+
+        <button class="button"
+                type="submit">
+            Войти
+        </button>
+
+    </form>
+
+</div>
+
+</body>
+</html>

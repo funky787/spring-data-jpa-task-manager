@@ -13,12 +13,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class DataInitializer {
 
     @Bean
-    public CommandLineRunner createAdmin(
+    public CommandLineRunner createUsers(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder
     ) {
 
         return args -> {
+
 
             String adminEmail = "admin@test.com";
 
@@ -34,6 +35,24 @@ public class DataInitializer {
                 userRepository.save(admin);
 
                 System.out.println("ADMIN создан: " + adminEmail);
+            }
+
+
+
+            String userEmail = "user@test.com";
+
+            if (userRepository.findByEmail(userEmail).isEmpty()) {
+
+                User user = new User(
+                        null,
+                        userEmail,
+                        passwordEncoder.encode("user123"),
+                        Role.USER
+                );
+
+                userRepository.save(user);
+
+                System.out.println("USER создан: " + userEmail);
             }
         };
     }

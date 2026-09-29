@@ -1,0 +1,89 @@
+!DOCTYPE html>
+<html lang="ru"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Информация о задаче</title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+<div th:replace="~{layout :: header}"></div>
+
+<main class="container">
+
+    <h1>Информация о задаче</h1>
+
+    <div class="card">
+
+        <p>
+            <b>ID:</b>
+            <span th:text="${task.id}"></span>
+        </p>
+
+        <p>
+            <b>Название:</b>
+            <span th:text="${task.title}"></span>
+        </p>
+
+        <p>
+            <b>Описание:</b>
+            <span th:text="${task.description}"></span>
+        </p>
+
+        <p>
+            <b>Приоритет:</b>
+            <span th:text="${task.priority}"></span>
+        </p>
+
+        <p>
+            <b>Статус:</b>
+            <span th:text="${task.status}"></span>
+        </p>
+
+        <p>
+            <b>Владелец:</b>
+
+            <span th:text="${task.owner != null
+                           ? task.owner.email
+                           : '-'}">
+            </span>
+        </p>
+
+        <div class="actions">
+
+            <a class="button"
+               th:href="@{/web/tasks}">
+                Назад
+            </a>
+
+            <a class="button"
+               sec:authorize="hasRole('ADMIN')"
+               th:href="@{/web/tasks/{id}/edit(id=${task.id})}">
+                Редактировать
+            </a>
+
+            <form sec:authorize="hasRole('ADMIN')"
+                  th:action="@{/web/tasks/{id}/delete(id=${task.id})}"
+                  method="post">
+
+                <button class="button button-danger"
+                        type="submit">
+                    Удалить
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</main>
+
+</body>
+</html>

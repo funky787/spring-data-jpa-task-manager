@@ -113,17 +113,22 @@ public class TaskServiceImpl implements TaskService {
         validateTask(task);
 
         Task oldTask = existing.get();
-        task.setId(id);
 
-        if (task.getPriority() == null) {
-            task.setPriority(properties.getDefaultPriority());
+
+        oldTask.setTitle(task.getTitle());
+        oldTask.setDescription(task.getDescription());
+
+        if (task.getPriority() != null) {
+            oldTask.setPriority(task.getPriority());
+        } else {
+            oldTask.setPriority(properties.getDefaultPriority());
         }
 
-        if (task.getStatus() == null) {
-            task.setStatus(oldTask.getStatus());
+        if (task.getStatus() != null) {
+            oldTask.setStatus(task.getStatus());
         }
 
-        return Optional.of(repository.save(task));
+        return Optional.of(repository.save(oldTask));
     }
 
     @Override
@@ -152,11 +157,11 @@ public class TaskServiceImpl implements TaskService {
     public Map<String, Long> getStats() {
         Map<String, Long> result = new LinkedHashMap<>();
 
-        // Сначала кладём все статусы, включая те, у которых сейчас 0 задач.
+
         Arrays.stream(Task.Status.values())
                 .forEach(status -> result.put(status.name(), 0L));
 
-        // А реальные значения берём из JPQL GROUP BY.
+
         for (Object[] row : repository.countGroupedByStatus()) {
             Task.Status status = (Task.Status) row[0];
             Long count = (Long) row[1];

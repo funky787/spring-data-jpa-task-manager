@@ -37,8 +37,7 @@ public class User implements UserDetails {
         this.role = role;
     }
 
-    // Права пользователя нужны Spring Security,
-    // но в JSON их возвращать не нужно.
+
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -47,15 +46,15 @@ public class User implements UserDetails {
         );
     }
 
-    // Для Spring Security username у нас = email.
-    // Сам email отдельно попадёт в JSON через getEmail().
+
+
     @Override
     @JsonIgnore
     public String getUsername() {
         return email;
     }
 
-    // Пароль никогда не возвращаем клиенту.
+
     @Override
     @JsonIgnore
     public String getPassword() {

@@ -41,9 +41,7 @@ class TaskServiceTest {
     private TaskServiceImpl taskService;
 
 
-    // =========================
-    // getAll()
-    // =========================
+
 
     @Test
     void getAll_shouldReturnAllTasks() {
@@ -85,9 +83,7 @@ class TaskServiceTest {
     }
 
 
-    // =========================
-    // create()
-    // =========================
+
 
     @Test
     void create_shouldSaveTaskWithStatusNew() {
@@ -175,9 +171,7 @@ class TaskServiceTest {
     }
 
 
-    // =========================
-    // findById()
-    // =========================
+
 
     @Test
     void findById_whenExists_shouldReturnTask() {
@@ -216,9 +210,7 @@ class TaskServiceTest {
     }
 
 
-    // =========================
-    // update()
-    // =========================
+
 
     @Test
     void update_whenExists_shouldReturnUpdatedTask() {
@@ -283,9 +275,7 @@ class TaskServiceTest {
     }
 
 
-    // =========================
-    // delete()
-    // =========================
+
 
     @Test
     void delete_shouldCallDeleteById() {
@@ -300,9 +290,7 @@ class TaskServiceTest {
     }
 
 
-    // =========================
-    // updateStatus()
-    // =========================
+
 
     @Test
     void updateStatus_whenExists_shouldUpdateStatusOnly() {
@@ -341,9 +329,7 @@ class TaskServiceTest {
     }
 
 
-    // =========================
-    // Exception
-    // =========================
+
 
     @Test
     void updateStatus_whenNotExists_shouldThrowTaskNotFoundException() {
@@ -362,9 +348,7 @@ class TaskServiceTest {
     }
 
 
-    // =========================
-    // Helper
-    // =========================
+
 
     private Task buildTask(
             Long id,

@@ -1,4 +1,3 @@
-# Этап 1 - собираем приложение
 FROM maven:3.9-eclipse-temurin-21 AS builder
 
 WORKDIR /build
@@ -12,7 +11,6 @@ COPY src ./src
 RUN mvn package -DskipTests -B
 
 
-# Этап 2 - запускаем приложение
 FROM eclipse-temurin:21-jre-jammy
 
 WORKDIR /app
