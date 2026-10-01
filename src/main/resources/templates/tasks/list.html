@@ -73,7 +73,7 @@
                     </a>
 
                     <a class="button"
-                       sec:authorize="hasRole('ADMIN')"
+                       sec:authorize="hasAnyRole('USER','ADMIN')"
                        th:href="@{/web/tasks/{id}/edit(id=${task.id})}">
                         Изменить
                     </a>

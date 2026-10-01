@@ -1,4 +1,4 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
@@ -63,7 +63,7 @@
             </a>
 
             <a class="button"
-               sec:authorize="hasRole('ADMIN')"
+               sec:authorize="hasAnyRole('USER','ADMIN')"
                th:href="@{/web/tasks/{id}/edit(id=${task.id})}">
                 Редактировать
             </a>

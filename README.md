@@ -96,7 +96,7 @@ GET /tasks
 
 Для защищённых запросов используется Bearer Token.
 
-![Получение списка задач](screenshots/01-jpa-tasks-postman.png)
+![Получение списка задач](screenshots/jpa-tasks-postman.png)
 
 На скриншоте видно успешный ответ:
 
@@ -176,7 +176,7 @@ POST /auth/login
 
 После успешной авторизации сервер возвращает JWT.
 
-![Получение JWT](screenshots/02-jwt-login.png)
+![Получение JWT](screenshots/jwt-login.png)
 
 Полученный токен используется для обращения к защищённым REST endpoints:
 
@@ -245,7 +245,7 @@ DELETE /tasks/2
 403 Forbidden
 
 
-![USER получает 403](screenshots/03-user-forbidden-delete.png)
+![USER получает 403](screenshots/user-forbidden-delete.png)
 
 Это означает, что пользователь авторизован, но у него недостаточно прав для выполнения операции.
 
@@ -257,7 +257,7 @@ DELETE /tasks/2
 204 No Content
 
 
-![ADMIN удаляет задачу](screenshots/04-admin-delete.png)
+![ADMIN удаляет задачу](screenshots/admin-delete.png)
 
 Таким образом, разграничение доступа по ролям работает.
 
@@ -289,7 +289,7 @@ Skipped: 0
 BUILD SUCCESS
 
 
-![Успешное прохождение тестов](screenshots/05-tests-success.png)
+![Успешное прохождение тестов](screenshots/tests-success.png)
 
 Всего выполняется 19 тестов:
 
@@ -437,7 +437,7 @@ depends_on:
 docker compose ps
 
 
-![Docker Compose](screenshots/06-docker-compose.png)
+![Docker Compose](screenshots/docker-compose.png)
 
 На скриншоте видно:
 
@@ -570,7 +570,7 @@ Volume будет удалён вместе с данными.
 http://localhost:8080/login
 
 
-![Страница входа](screenshots/07-web-login.png)
+![Страница входа](screenshots/web-login.png)
 
 После успешной авторизации пользователь перенаправляется на:
 
@@ -650,13 +650,14 @@ HTML
 
 После входа пользователя с ролью USER отображается список задач.
 
-![Интерфейс USER](screenshots/08-web-user.png)
+![Интерфейс USER](screenshots/web-user.png)
 
 USER может:
 
 - просматривать список задач;
 - открывать подробную информацию;
 - создавать задачи.
+- изменять задачи.
 
 Административные кнопки изменения и удаления для USER не отображаются.
 
@@ -666,7 +667,7 @@ USER может:
 
 У ADMIN интерфейс отличается.
 
-![Интерфейс ADMIN](screenshots/09-web-admin.png)
+![Интерфейс ADMIN](screenshots/web-admin.png)
 
 ADMIN видит дополнительные действия:
 
@@ -694,7 +695,7 @@ sec:authorize="hasRole('ADMIN')"
 
 Через веб-интерфейс можно открыть форму создания новой задачи.
 
-![Форма создания задачи](screenshots/10-web-task-form.png)
+![Форма создания задачи](screenshots/web-task-form.png)
 
 Форма позволяет указать:
 
