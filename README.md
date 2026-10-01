@@ -1,15 +1,12 @@
 # Task Manager
 
-Учебный проект на Spring Boot, который постепенно дорабатывался в рамках нескольких контрольных точек.
-
 В рамках проекта были выполнены следующие кт:
 
 1. Spring Data JPA
-2. Spring Security + JWT
-3. Docker
-4. Thymeleaf + Spring Security
-
-Итоговый проект представляет собой Task Manager с REST API, базой данных PostgreSQL, JWT-аутентификацией, ролями USER/ADMIN, веб-интерфейсом и запуском через Docker Compose.
+2. JUnit + Mockito
+3. Spring Security + JWT
+4. Docker
+5. Thymeleaf + Spring Security
 
 ---
 
@@ -777,11 +774,13 @@ BUILD SUCCESS
 
 
 Spring Data JPA
-       ↓
+       |
+ JUnit + Mockito
+       |
 Spring Security + JWT
-       ↓
+       |
 Docker + PostgreSQL
-       ↓
+       |
 Thymeleaf + Spring Security
 
 
