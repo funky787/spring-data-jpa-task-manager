@@ -81,6 +81,24 @@ Spring Data JPA позволяет выполнять основные опер�
 - сортировка;
 - пагинация.
 
+
+## База данных H2
+
+Для локальной работы приложение использует встроенную базу данных H2.
+
+Данные задач хранятся в таблице `TASKS`.
+
+Через H2 Console можно посмотреть содержимое базы данных и убедиться, что задачи действительно сохраняются через Spring Data JPA.
+
+Для проверки был выполнен SQL-запрос:
+
+`SELECT * FROM TASKS;`
+
+В таблице можно увидеть сохранённые задачи, их идентификаторы, названия, описания, приоритеты и статусы.
+
+![База данных H2](screenshots/h2.png)
+
+
 ## Проверка через Postman
 
 REST API можно проверить через Postman.
@@ -162,14 +180,6 @@ BCryptPasswordEncoder
 POST /auth/login
 
 
-Пример запроса:
-
-
-{
-  "email": "admin@test.com",
-  "password": "admin123"
-}
-
 
 После успешной авторизации сервер возвращает JWT.
 
@@ -222,10 +232,6 @@ Controller
 
 Для ограничения доступа используется Spring Security и `@PreAuthorize`.
 
-Например, удаление задачи разрешено только пользователю с ролью ADMIN:
-
-
-@PreAuthorize("hasRole('ADMIN')")
 
 
 ### Проверка USER
@@ -436,7 +442,7 @@ docker compose ps
 
 ![Docker Compose](screenshots/docker-compose.png)
 
-На скриншоте видно:
+На скрине видно:
 
 
 taskmanager-app       Up
@@ -775,7 +781,11 @@ BUILD SUCCESS
 
 Spring Data JPA
        |
+<<<<<<< HEAD
  JUnit + Mockito
+=======
+JUnit + Mockito
+>>>>>>> d6be7ec (Update README and add H2 database screenshot)
        |
 Spring Security + JWT
        |
