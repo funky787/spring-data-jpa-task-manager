@@ -23,7 +23,7 @@ Task Manager — приложение на Spring Boot для управлени
 
 Приложение построено по слоистой архитектуре:
 
-Controller → Service → Repository → Database
+Controller -> Service -> Repository -> Database
 
 - Controller принимает HTTP-запросы.
 - Service содержит основную логику приложения.
