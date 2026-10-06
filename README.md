@@ -1,821 +1,133 @@
 # Task Manager
 
-В рамках проекта были выполнены следующие кт:
+Task Manager — учебное приложение на Spring Boot для управления задачами.
 
-1. Spring Data JPA
-2. JUnit + Mockito
-3. Spring Security + JWT
-4. Docker
-5. Thymeleaf + Spring Security
+В приложении можно создавать, просматривать, изменять и удалять задачи.  
+Для задач можно задавать статус и приоритет.
 
----
+В проекте реализована авторизация пользователей и разграничение доступа по ролям USER и ADMIN.
 
+## Используемые технологии
 
+- Java
+- Spring Boot
+- Spring Web
+- Spring Data JPA
+- Spring Security
+- JWT
+- Hibernate
+- H2
+- PostgreSQL
+- Thymeleaf
+- Docker
+- JUnit
+- Mockito
 
-# КТ Spring Data JPA Task Manager
+## Структура приложения
 
-## Цель работы
+Приложение построено по слоистой архитектуре:
 
-Основной задачей этой КТ был переход от хранения задач в памяти к работе с базой данных через Spring Data JPA.
+Controller → Service → Repository → Database
 
-Вместо `InMemoryTaskRepository` был создан репозиторий на основе `JpaRepository`.
+- Controller принимает HTTP-запросы.
+- Service содержит основную логику приложения.
+- Repository отвечает за работу с базой данных.
+- Entity описывает объекты, которые хранятся в базе.
 
-Архитектура приложения:
+## Работа с задачами
 
-
-Controller
-    |
-Service
-    |
-Repository
-    |
-Database
-
-
-## Модель Task
-
-Задача представлена JPA-сущностью `Task`.
-
-Основные поля:
-
-- `id` — идентификатор;
-- `title` — название;
-- `description` — описание;
-- `priority` — приоритет;
-- `status` — статус;
-- `owner` — владелец задачи.
-
-Приоритет задачи:
-
-
-LOW
-MEDIUM
-HIGH
-
-
-Статус задачи:
-
-
-NEW
-IN_PROGRESS
-DONE
-
-
-## Spring Data JPA
-
-Для доступа к данным используется `TaskRepository`.
-
-Spring Data JPA позволяет выполнять основные операции с базой без написания большого количества SQL вручную.
-
-В проекте реализованы:
+Для задач реализованы основные CRUD-операции:
 
 - создание задачи;
 - получение задач;
-- поиск задачи по ID;
-- редактирование;
-- удаление;
+- изменение задачи;
+- удаление задачи;
 - изменение статуса;
-- фильтрация;
-- поиск;
-- статистика;
-- сортировка;
-- пагинация.
+- фильтрация и поиск.
 
+Задача содержит название, описание, приоритет, статус и владельца.
 
-## База данных H2
+![Работа с задачами](screenshots/jpa-tasks-postman.png)
 
-Для локальной работы приложение использует встроенную базу данных H2.
+## База данных
 
-Данные задач хранятся в таблице `TASKS`.
+Для локального запуска используется H2.
 
-Через H2 Console можно посмотреть содержимое базы данных и убедиться, что задачи действительно сохраняются через Spring Data JPA.
+Для запуска приложения через Docker используется PostgreSQL.
 
-Для проверки был выполнен SQL-запрос:
-
-`SELECT * FROM TASKS;`
-
-В таблице можно увидеть сохранённые задачи, их идентификаторы, названия, описания, приоритеты и статусы.
+Для работы с базой данных используется Spring Data JPA и Hibernate.
 
 ![База данных H2](screenshots/h2.png)
 
+## Spring Security и JWT
 
-## Проверка через Postman
+В приложении используется Spring Security.
 
-REST API можно проверить через Postman.
+Пользователи имеют роли USER и ADMIN.  
+Доступ к некоторым операциям зависит от роли пользователя.
 
-Пример получения списка задач:
+Для REST API используется JWT-аутентификация.
 
+После успешного входа пользователь получает JWT-токен, который используется в следующих запросах.
 
-GET /tasks
+![Авторизация JWT](screenshots/jwt-login.png)
 
+Пользователь без необходимых прав получает ответ 403 Forbidden.
 
-Для защищённых запросов используется Bearer Token.
+![Запрет удаления](screenshots/user-forbidden-delete.png)
 
-![Получение списка задач](screenshots/jpa-tasks-postman.png)
+## Веб-интерфейс
 
-На скриншоте видно успешный ответ:
+Веб-интерфейс реализован с помощью Thymeleaf.
 
+Контроллер передаёт данные в Model, после чего Thymeleaf формирует HTML-страницу.
 
-200 OK
-
-
-И список задач, полученный через REST API.
-
----
-
-# КТ Spring Security + JWT
-
-## Цель работы
-
-В этой КТ в Task Manager была добавлена система аутентификации и авторизации.
-
-Были реализованы:
-
-- пользователи;
-- роли;
-- регистрация;
-- вход;
-- BCrypt;
-- JWT;
-- JwtAuthFilter;
-- разграничение доступа;
-- обработка 401 и 403;
-- security-тесты.
-
----
-
-## Пользователи
-
-В проект была добавлена сущность `User`.
-
-Пользователь содержит:
-
-
-id
-email
-password
-role
-
-
-Используются две роли:
-
-
-USER
-ADMIN
-
-
-Пароли хранятся в зашифрованном виде с использованием:
-
-
-BCryptPasswordEncoder
-
-
----
-
-## Авторизация
-
-Для входа используется:
-
-
-POST /auth/login
-
-
-
-После успешной авторизации сервер возвращает JWT.
-
-![Получение JWT](screenshots/jwt-login.png)
-
-Полученный токен используется для обращения к защищённым REST endpoints:
-
-
-Authorization: Bearer <token>
-
-
----
-
-## JWT
-
-Для работы с JWT создан `JwtService`.
-
-Он выполняет:
-
-- генерацию JWT;
-- получение username из токена;
-- проверку срока действия;
-- проверку валидности токена.
-
-Также используется `JwtAuthFilter`.
-
-Общая схема:
-
-
-HTTP Request
-      |
-JwtAuthFilter
-      |
-Bearer Token
-      |
-JwtService
-      |
-UserDetailsService
-      |
-SecurityContext
-      |
-Controller
-
-
-Если JWT корректный, пользователь становится авторизованным для текущего запроса.
-
----
-
-## Разграничение доступа
-
-Для ограничения доступа используется Spring Security и `@PreAuthorize`.
-
-
-
-### Проверка USER
-
-Пользователь с ролью USER пытается удалить задачу:
-
-
-DELETE /tasks/2
-
-
-Сервер возвращает:
-
-
-403 Forbidden
-
-
-![USER получает 403](screenshots/user-forbidden-delete.png)
-
-Это означает, что пользователь авторизован, но у него недостаточно прав для выполнения операции.
-
-### Проверка ADMIN
-
-При выполнении DELETE-запроса пользователем ADMIN сервер разрешает операцию:
-
-
-204 No Content
-
-
-![ADMIN удаляет задачу](screenshots/admin-delete.png)
-
-Таким образом, разграничение доступа по ролям работает.
-
----
-
-## Тестирование
-
-В проекте используются:
-
-- JUnit;
-- Mockito;
-- MockMvc;
-- Spring Security Test.
-
-Для запуска тестов:
-
-
-mvn clean test
-
-
-Результат:
-
-
-Tests run: 19
-Failures: 0
-Errors: 0
-Skipped: 0
-
-BUILD SUCCESS
-
-
-![Успешное прохождение тестов](screenshots/tests-success.png)
-
-Всего выполняется 19 тестов:
-
-
-TaskControllerTest — 4
-JwtServiceTest      — 4
-TaskServiceTest     — 11
-
-
-Все тесты проходят успешно.
-
----
-
-# КТ Docker 
-
-## Цель работы
-
-В этой КТ приложение было контейнеризировано с помощью Docker.
-
-При запуске через Docker вместо H2 используется PostgreSQL.
-
-Docker Compose запускает два сервиса:
-Spring Boo
-PostgreSQL 16
-
-
-
----
-
-## Dockerfile
-
-Для сборки используется multi-stage Dockerfile.
-
-### Первый этап — сборка
-
-Используется Maven:
-
-
-FROM maven:3.9-eclipse-temurin-21 AS builder
-
-
-На этом этапе:
-
-1. загружаются Maven-зависимости;
-2. копируется исходный код;
-3. выполняется сборка;
-4. создаётся JAR.
-
-Команда сборки:
-
-
-mvn package -DskipTests
-
-
-### Второй этап — запуск
-
-Для запуска используется JRE:
-
-
-FROM eclipse-temurin:21-jre-jammy
-
-
-Готовый JAR копируется из первого этапа:
-
-
-COPY --from=builder /build/target/*.jar app.jar
-
-
-После чего приложение запускается:
-
-
-ENTRYPOINT ["java", "-jar", "app.jar"]
-
-
----
-
-## Non-root пользователь
-
-Приложение внутри Docker-контейнера запускается не от root.
-
-Для этого создаётся отдельный пользователь:
-
-
-appuser
-
-
-И используется:
-
-
-USER appuser
-
-
----
-
-## Docker Compose
-
-В `docker-compose.yml` описаны два сервиса:
-
-
-app
-postgres
-
-
-Для PostgreSQL используется:
-
-
-postgres:16-alpine
-
-
-Приложение доступно на:
-
-
-http://localhost:8080
-
-
-PostgreSQL:
-
-
-localhost:5432
-
-
----
-
-## Healthcheck
-
-Для PostgreSQL настроен healthcheck через:
-
-
-pg_isready
-
-
-Приложение зависит от состояния PostgreSQL:
-
-
-depends_on:
-  postgres:
-    condition: service_healthy
-
-
-Это означает, что приложение запускается после того, как PostgreSQL готов принимать подключения.
-
-Проверить контейнеры можно командой:
-
-
-docker compose ps
-
-
-![Docker Compose](screenshots/docker-compose.png)
-
-На скрине видно:
-
-
-taskmanager-app       Up
-taskmanager-postgres  Up (healthy)
-
-
-Следовательно, оба контейнера работают, а PostgreSQL успешно проходит healthcheck.
-
----
-
-## PostgreSQL
-
-В Docker-окружении Task Manager использует PostgreSQL.
-
-Для Docker создан отдельный Spring-профиль:
-
-
-docker
-
-
-Конфигурация находится в:
-
-
-src/main/resources/application-docker.properties
-
-
-В Docker Compose устанавливается:
-
-
-SPRING_PROFILES_ACTIVE=docker
-
-
-Контейнер приложения подключается к базе по имени сервиса:
-
-
-postgres
-
-
-То есть внутри Docker используется адрес вида:
-
-
-jdbc:postgresql://postgres:5432/taskdb
-
-
----
-
-## Переменные окружения
-
-Настройки базы и JWT вынесены в `.env`.
-
-Пример:
-
-
-POSTGRES_DB=taskdb
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=your_password
-
-JWT_SECRET=your_secret
-JWT_EXPIRATION=86400000
-
-
-Настоящий `.env` не должен попадать в Git.
-
-Он добавлен в:
-
-
-.gitignore
-
-
-Для примера используется:
-
-
-.env.example
-
-
-В нём находятся только примеры переменных без реальных секретов.
-
----
-
-## Docker Volume
-
-Для хранения PostgreSQL используется именованный Docker Volume:
-
-
-postgres_data
-
-
-Благодаря этому данные базы не удаляются вместе с контейнером.
-
-Это было проверено следующим способом:
-
-
-docker compose down
-docker compose up
-
-
-После повторного запуска ранее созданные пользователи и задачи остались в базе.
-
-Если выполнить:
-
-
-docker compose down -v
-
-
-Volume будет удалён вместе с данными.
-
----
-
-# КТ Thymeleaf + Spring Security
-
-## Цель работы
-
-В последней КТ к Task Manager был добавлен полноценный веб-интерфейс.
-
-До этого основная работа с API выполнялась через Postman.
-
-Теперь приложением можно пользоваться через браузер.
-
----
-
-## Страница входа
-
-Для браузерной версии используется Spring Security Form Login.
-
-Страница авторизации:
-
-
-http://localhost:8080/login
-
+Для отображения элементов в зависимости от роли используется интеграция Thymeleaf со Spring Security.
 
 ![Страница входа](screenshots/web-login.png)
 
-После успешной авторизации пользователь перенаправляется на:
+![Интерфейс администратора](screenshots/web-admin.png)
 
+![Интерфейс пользователя](screenshots/web-user.png)
 
-/web/tasks
+![Форма задачи](screenshots/web-task-form.png)
 
+## Docker
 
----
+Приложение можно запускать вместе с PostgreSQL через Docker Compose.
 
-## TaskWebController
+Docker Compose запускает два основных контейнера:
 
-Для веб-интерфейса используется отдельный:
+- Spring Boot приложение;
+- PostgreSQL.
 
+Для хранения данных PostgreSQL используется Docker Volume.
 
-@Controller
-TaskWebController
+![Docker](screenshots/docker-compose.png)
 
+## Тестирование
 
-Он отвечает за:
+Для тестирования используются JUnit, Mockito и MockMvc.
 
-- список задач;
-- просмотр задачи;
-- создание задачи;
-- редактирование задачи;
-- удаление задачи.
+Тестами проверяется работа сервисов, контроллеров и JWT.
 
-REST Controller и Web Controller выполняют разные задачи.
+Всего выполняется 19 тестов.
 
-REST Controller возвращает данные, например JSON.
+![Тесты](screenshots/tests-success.png)
 
-Web Controller передаёт данные в Thymeleaf и возвращает HTML-страницы.
+## Итог
 
----
+В проекте реализованы:
 
-## Thymeleaf
-
-Для HTML-интерфейса используются Thymeleaf-шаблоны.
-
-Основные шаблоны:
-login.html
-list.html
-detail.html
-form.html
-
-
-
-
-Для работы с HTML используются конструкции Thymeleaf:
-
-
-th:text
-th:each
-th:if
-th:field
-th:action
-
-
-Общая схема:
-
-
-Browser
-   |
-TaskWebController
-   |
-TaskService
-   |
-Model
-   |
-Thymeleaf
-   |
-HTML
-
-
----
-
-## Интерфейс USER
-
-После входа пользователя с ролью USER отображается список задач.
-
-![Интерфейс USER](screenshots/web-user.png)
-
-USER может:
-
-- просматривать список задач;
-- открывать подробную информацию;
-- создавать задачи.
-- изменять задачи.
-
-Административные кнопки изменения и удаления для USER не отображаются.
-
----
-
-## Интерфейс ADMIN
-
-У ADMIN интерфейс отличается.
-
-![Интерфейс ADMIN](screenshots/web-admin.png)
-
-ADMIN видит дополнительные действия:
-
-
-Подробнее
-Изменить
-Удалить
-
-
-Для ограничения отображения элементов интерфейса используется интеграция Thymeleaf со Spring Security.
-
-Например:
-
-
-sec:authorize="hasRole('ADMIN')"
-
-
-При этом безопасность реализована не только скрытием кнопок.
-
-Доступ также проверяется на стороне сервера через Spring Security.
-
----
-
-## Создание задачи
-
-Через веб-интерфейс можно открыть форму создания новой задачи.
-
-![Форма создания задачи](screenshots/web-task-form.png)
-
-Форма позволяет указать:
-
-- название;
-- описание;
-- приоритет;
-- статус.
-
-После отправки формы задача сохраняется через `TaskService` в базу данных.
-
----
-
-
-# Запуск проекта через Docker
-
-Для запуска необходим Docker Desktop.
-
-Перейти в папку проекта:
-
-
-cd D:\projects\spring-data-jpa-task-manager
-
-
-Запустить приложение:
-
-
-docker compose up --build
-
-
-После запуска открыть:
-
-
-http://localhost:8080/login
-
-
-Остановить контейнеры:
-
-
-docker compose down
-
-
-Для последующего запуска без пересборки:
-
-
-docker compose up
-
-
-
-
-# Запуск тестов
-
-Проект использует Java 17 для запуска тестов.
-
-Проверить текущую версию:
-
-
-mvn -version
-
-
-Запустить тесты:
-
-
-mvn clean test
-
-
-Результат:
-
-
-Tests run: 19, Failures: 0, Errors: 0, Skipped: 0
-
-BUILD SUCCESS
-
-
----
-
-# Итог
-
-В рамках контрольных работ Task Manager постепенно дорабатывался:
-
-
-Spring Data JPA
-       |
-<<<<<<< HEAD
- JUnit + Mockito
-=======
-JUnit + Mockito
->>>>>>> d6be7ec (Update README and add H2 database screenshot)
-       |
-Spring Security + JWT
-       |
-Docker + PostgreSQL
-       |
-Thymeleaf + Spring Security
-
-
-В итоговой версии реализованы:
-
+- CRUD для задач;
 - Spring Data JPA;
-- хранение задач в базе данных;
-- REST API;
-- пользователи;
-- роли USER и ADMIN;
-- BCrypt;
+- работа с H2 и PostgreSQL;
+- Spring Security;
 - JWT-аутентификация;
-- JwtAuthFilter;
-- разграничение доступа;
-- обработка 401/403;
-- автоматические тесты;
+- роли USER и ADMIN;
+- веб-интерфейс на Thymeleaf;
 - Docker;
-- Docker Compose;
-- PostgreSQL;
-- healthcheck;
-- Docker Volume;
-- переменные окружения;
-- Spring-профиль для Docker;
-- Thymeleaf;
-- форма авторизации;
+- автоматические тесты.
 - веб-интерфейс;
 - создание, просмотр, изменение и удаление задач.
 
